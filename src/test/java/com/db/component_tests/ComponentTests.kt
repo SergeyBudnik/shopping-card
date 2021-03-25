@@ -1,21 +1,30 @@
-package e2e_tests
+package com.db.component_tests
 
-import config.TestsConfig
-import org.junit.After
-import org.junit.Assert.*
-import org.junit.Before
-import org.junit.Test
+import com.db.config.BackendMocksConfig
+import com.db.config.TestsConfig
+import com.db.data.Product
+import com.db.steps.ProductsCheckoutSteps
+import com.db.steps.ProductsListPageSteps
+import com.db.steps.ProductsPurchaseSteps
+import com.github.tomakehurst.wiremock.WireMockServer
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration
+import com.github.tomakehurst.wiremock.junit.WireMockRule
+import org.junit.*
 import org.openqa.selenium.WebDriver
-import steps.ProductsCheckoutSteps
-import steps.ProductsListPageSteps
-import steps.ProductsPurchaseSteps
 
-class E2ETests {
+class ComponentTests {
   private lateinit var webDriver: WebDriver
+
+  private lateinit var wireMockServer: WireMockServer
 
   private lateinit var productsListPageSteps: ProductsListPageSteps
   private lateinit var productsCheckoutPageSteps: ProductsCheckoutSteps
   private lateinit var productsPurchasePageSteps: ProductsPurchaseSteps
+
+  @Rule @JvmField
+  val wireMockRule = WireMockRule(
+    WireMockConfiguration.wireMockConfig().port(8080)
+  )
 
   @Before
   fun before() {
@@ -25,6 +34,32 @@ class E2ETests {
     productsCheckoutPageSteps = ProductsCheckoutSteps(webDriver = webDriver)
     productsPurchasePageSteps = ProductsPurchaseSteps(webDriver = webDriver)
 
+    BackendMocksConfig.startMock(
+      wireMockRule = wireMockRule,
+      products = listOf(
+        Product(
+          id = "1",
+          name = "product-1",
+          description = "description-1",
+          priceInCents = 32
+        ),
+
+        Product(
+          id = "2",
+          name = "product-2",
+          description = "description-2",
+          priceInCents = 64
+        ),
+
+        Product(
+          id = "3",
+          name = "product-3",
+          description = "description-3",
+          priceInCents = 128
+        )
+      )
+    )
+
     TestsConfig.openApp(webDriver = webDriver)
   }
 
@@ -33,12 +68,12 @@ class E2ETests {
     /**
      * Проверяем, что открылась страница со списком товаров
      */
-    assertTrue(productsListPageSteps.rootIsDisplayed())
+    Assert.assertTrue(productsListPageSteps.rootIsDisplayed())
 
     /**
      * Проверяем, что отображаются все продукты, которые мы хотим купить
      */
-    assertTrue(productsListPageSteps.productIsDisplayed(id = "1"))
+    Assert.assertTrue(productsListPageSteps.productIsDisplayed(id = "1"))
 
     /**
      * Покупаем 1 порцию продукта с id = 1
@@ -48,7 +83,7 @@ class E2ETests {
     /**
      * Проверяем, что все продукты добавились в корзину
      */
-    assertEquals("1", productsListPageSteps.getProductAmount(id = "1"))
+    Assert.assertEquals("1", productsListPageSteps.getProductAmount(id = "1"))
 
     /**
      * Открываем страницу с подтверждением покупки
@@ -58,7 +93,7 @@ class E2ETests {
     /**
      * Проверяем, что открылась страница с подтверждением покупки
      */
-    assertTrue(productsCheckoutPageSteps.rootIsDisplayed())
+    Assert.assertTrue(productsCheckoutPageSteps.rootIsDisplayed())
 
     /**
      * Подтверждаем покупку
@@ -68,12 +103,12 @@ class E2ETests {
     /**
      * Проверяем, что открылась страница с оплатой
      */
-    assertTrue(productsPurchasePageSteps.rootIsDisplayed())
+    Assert.assertTrue(productsPurchasePageSteps.rootIsDisplayed())
 
     /**
-     * Проверяем, что стоимость всех товаров - 1.99$
+     * Проверяем, что стоимость всех товаров - 0.32$
      */
-    assertEquals("1.99$", productsPurchasePageSteps.getTotalPrice())
+    Assert.assertEquals("0.32$", productsPurchasePageSteps.getTotalPrice())
   }
 
   @Test
@@ -81,13 +116,13 @@ class E2ETests {
     /**
      * Проверяем, что открылась страница со списком товаров
      */
-    assertTrue(productsListPageSteps.rootIsDisplayed())
+    Assert.assertTrue(productsListPageSteps.rootIsDisplayed())
 
     /**
      * Проверяем, что отображаются все продукты, которые мы хотим купить
      */
-    assertTrue(productsListPageSteps.productIsDisplayed(id = "1"))
-    assertTrue(productsListPageSteps.productIsDisplayed(id = "2"))
+    Assert.assertTrue(productsListPageSteps.productIsDisplayed(id = "1"))
+    Assert.assertTrue(productsListPageSteps.productIsDisplayed(id = "2"))
 
     /**
      * Покупаем 1 порцию продукта с id = 1
@@ -101,8 +136,8 @@ class E2ETests {
     /**
      * Проверяем, что все продукты добавились в корзину
      */
-    assertEquals("1", productsListPageSteps.getProductAmount(id = "1"))
-    assertEquals("1", productsListPageSteps.getProductAmount(id = "2"))
+    Assert.assertEquals("1", productsListPageSteps.getProductAmount(id = "1"))
+    Assert.assertEquals("1", productsListPageSteps.getProductAmount(id = "2"))
 
     /**
      * Открываем страницу с подтверждением покупки
@@ -112,7 +147,7 @@ class E2ETests {
     /**
      * Проверяем, что открылась страница с подтверждением покупки
      */
-    assertTrue(productsCheckoutPageSteps.rootIsDisplayed())
+    Assert.assertTrue(productsCheckoutPageSteps.rootIsDisplayed())
 
     /**
      * Подтверждаем покупку
@@ -122,12 +157,12 @@ class E2ETests {
     /**
      * Проверяем, что открылась страница с оплатой
      */
-    assertTrue(productsPurchasePageSteps.rootIsDisplayed())
+    Assert.assertTrue(productsPurchasePageSteps.rootIsDisplayed())
 
     /**
-     * Проверяем, что стоимость всех товаров - 2.98$
+     * Проверяем, что стоимость всех товаров - 0.96$
      */
-    assertEquals("2.98$", productsPurchasePageSteps.getTotalPrice())
+    Assert.assertEquals("0.96$", productsPurchasePageSteps.getTotalPrice())
   }
 
   @Test
@@ -135,13 +170,13 @@ class E2ETests {
     /**
      * Проверяем, что открылась страница со списком товаров
      */
-    assertTrue(productsListPageSteps.rootIsDisplayed())
+    Assert.assertTrue(productsListPageSteps.rootIsDisplayed())
 
     /**
      * Проверяем, что отображаются все продукты, которые мы хотим купить
      */
-    assertTrue(productsListPageSteps.productIsDisplayed(id = "1"))
-    assertTrue(productsListPageSteps.productIsDisplayed(id = "2"))
+    Assert.assertTrue(productsListPageSteps.productIsDisplayed(id = "1"))
+    Assert.assertTrue(productsListPageSteps.productIsDisplayed(id = "2"))
 
     /**
      * Покупаем 4 порции продукта с id = 1
@@ -160,8 +195,8 @@ class E2ETests {
     /**
      * Проверяем, что все продукты добавились в корзину
      */
-    assertEquals("4", productsListPageSteps.getProductAmount(id = "1"))
-    assertEquals("2", productsListPageSteps.getProductAmount(id = "2"))
+    Assert.assertEquals("4", productsListPageSteps.getProductAmount(id = "1"))
+    Assert.assertEquals("2", productsListPageSteps.getProductAmount(id = "2"))
 
     /**
      * Открываем страницу с подтверждением покупки
@@ -171,7 +206,7 @@ class E2ETests {
     /**
      * Проверяем, что открылась страница с подтверждением покупки
      */
-    assertTrue(productsCheckoutPageSteps.rootIsDisplayed())
+    Assert.assertTrue(productsCheckoutPageSteps.rootIsDisplayed())
 
     /**
      * Подтверждаем покупку
@@ -181,12 +216,12 @@ class E2ETests {
     /**
      * Проверяем, что открылась страница с оплатой
      */
-    assertTrue(productsPurchasePageSteps.rootIsDisplayed())
+    Assert.assertTrue(productsPurchasePageSteps.rootIsDisplayed())
 
     /**
      * Проверяем, что стоимость всех товаров - 9.94$
      */
-    assertEquals("9.94$", productsPurchasePageSteps.getTotalPrice())
+    Assert.assertEquals("2.56$", productsPurchasePageSteps.getTotalPrice())
   }
 
   @After

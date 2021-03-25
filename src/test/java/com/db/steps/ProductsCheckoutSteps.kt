@@ -1,4 +1,4 @@
-package steps
+package com.db.steps
 
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver

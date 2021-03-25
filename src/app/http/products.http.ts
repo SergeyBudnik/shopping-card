@@ -4,7 +4,7 @@ import {Product} from '../data/product';
 
 @Injectable()
 export class ProductsHttp {
-  private root = `http://localhost:8080/shopping_card_api_war_exploded/products`;
+  private root = `http://localhost:8080/shopping_card_api/products`;
 
   public constructor(private http: HttpClient) {}
 
