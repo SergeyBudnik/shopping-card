@@ -1,0 +1,57 @@
+.app-product-card {
+  display: flex;
+  flex-direction: row;
+
+  margin-top: 12px;
+}
+
+.app-product-card-image {
+  width: 100px;
+  height: 100px;
+
+  background: #63c363;
+
+  border-radius: 6px;
+
+  margin-right: 30px;
+}
+
+.app-product-card-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-product-card-title {
+  font-size: 20px;
+
+  margin-bottom: 3px;
+}
+
+.app-product-card-description {
+  font-size: 14px;
+
+  margin-bottom: 3px;
+}
+
+.app-product-card-price {
+  font-size: 12px;
+
+  margin-bottom: 6px;
+}
+
+.app-product-card-amount-change-button {
+  margin-right: 6px;
+  padding: 6px 12px;
+
+  background: #63c363;
+
+  border-radius: 6px;
+
+  text-align: center;
+
+  cursor: pointer;
+}
+
+.app-product-card-amount {
+  padding: 6px 12px;
+}

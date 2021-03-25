@@ -1,0 +1,15 @@
+<div class="app-product-card">
+  <div class="app-product-card-image"></div>
+
+  <div class="app-product-card-info">
+    <div class="app-product-card-title">{{productWithAmount.product.name}}</div>
+    <div class="app-product-card-description">{{productWithAmount.product.description}}</div>
+    <div class="app-product-card-price">{{productWithAmount.product.priceInCents / 100.0}}$</div>
+
+    <div style="display: flex; flex-direction: row">
+      <div id="product-add-product" class="app-product-card-amount-change-button" (click)="addProduct()">+</div>
+      <div id="product-remove-product" class="app-product-card-amount-change-button" (click)="removeProduct()">-</div>
+      <div id="product-amount" class="app-product-card-amount">{{productWithAmount.amount}}</div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+<div id="products-list-root" class="app-page">
+  <app-product-card
+    *ngFor="let product of productsWithAmounts" [productWithAmount]="product"
+    id="products-list-item-{{product.product.id}}"
+    (addProduct)="addProduct($event)"
+    (removeProduct)="removeProduct($event)">
+  </app-product-card>
+
+  <br>
+
+  <div id="products-list-checkout" class="app-page-submit-button" (click)="checkout()">
+    Checkout
+  </div>
+</div>
